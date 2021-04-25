@@ -1,0 +1,11 @@
+@import '../styles/_colors.scss';
+
+.Card {
+  background-color: #fff;
+  flex-grow: 0;
+  border: 2px solid #666;
+  box-shadow: rgba(0, 0, 0, 0.2) 3px 3px 3px;
+  padding: 40px;
+  border-radius: 10px;
+  font-size: 34px;
+}

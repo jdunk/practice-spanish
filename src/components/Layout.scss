@@ -1,0 +1,21 @@
+@import '../styles/_colors.scss';
+
+.Layout {
+  background-color: #f0f;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-content: stretch;
+  height: 100vh;
+}
+
+.Header {
+}
+
+.MainContent {
+  flex-grow: 1;
+}
+
+.Footer {
+  background-color: #cff;
+}
