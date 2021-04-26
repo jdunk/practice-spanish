@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import Flippy from './Flippy.jsx';
+import PronounImage from './PronounImage.jsx';
 import verbs from '../data/verbs';
 
 import './MainContent.scss';
@@ -15,7 +16,7 @@ function importAll(r) {
 }
 
 const images = importAll(require.context('../assets/img/pronouns', false, /\.(png|jpe?g|svg|jfif)$/));
-const pronounImages = images.map(([filename, module]) => <img src={module.default} alt="" style={{ boxShadow: '0 4px 6px 0 rgba(0, 0, 0, 0.2)' }} />);
+const pronounImages = images.map(([filename, module]) => module.default);
 
 console.log({
   entries: Object.entries(images),
@@ -27,7 +28,7 @@ function getRandomArrayItem(givenArray) {
 }
 
 function getRandomPronounImage() {
-  return getRandomArrayItem(pronounImages);
+  return (<PronounImage src={getRandomArrayItem(pronounImages)} />);
 }
 
 function getRandomVerb() {
@@ -56,6 +57,60 @@ const MainContent = () => {
     // cleanup this component
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, []);
+
+  useEffect(() => {
+    let touchstartX = 0;
+    let touchstartY = 0;
+    let touchendX = 0;
+    let touchendY = 0;
+
+    const handleTouchStart = (event) => {
+      touchstartX = event.changedTouches[0].screenX;
+      touchstartY = event.changedTouches[0].screenY;
+    };
+
+    const handleTouchEnd = (event) => {
+      touchendX = event.changedTouches[0].screenX;
+      touchendY = event.changedTouches[0].screenY;
+      handleGesture();
+    };
+
+    window.addEventListener('touchstart', handleTouchStart, false);
+
+    window.addEventListener('touchend', handleTouchEnd, false);
+
+    function handleGesture() {
+      if (touchendX + 10 < touchstartX) {
+        // console.log('Swiped left');
+        // console.log(touchendX - touchstartX)
+        nextTestItem();
+      }
+
+      if (touchendX > touchstartX + 10) {
+        // console.log('Swiped right');
+        // console.log(touchendX - touchstartX)
+      }
+
+      if (touchendY + 10 < touchstartY) {
+        // console.log('Swiped up');
+        // console.log(touchendY - touchstartY)
+      }
+
+      if (touchendY > touchstartY + 10) {
+        // console.log('Swiped down');
+        // console.log(touchendY - touchstartY)
+      }
+
+      if (touchendY === touchstartY) {
+        // console.log('Tap');
+      }
+    }
+
+    return () => {
+      window.removeEventListener('touchstart', handleTouchStart);
+      window.removeEventListener('touchend', handleTouchEnd);
     };
   }, []);
 
