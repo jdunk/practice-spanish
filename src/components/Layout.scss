@@ -1,18 +1,8 @@
 @import '../styles/_colors.scss';
 
 .Layout {
-  background-color: #f0f;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-content: stretch;
-}
-
-.Header {
-}
-
-.MainContent {
-  flex-grow: 1;
+  background-color: #ccc;
+  min-height: 100%;
 }
 
 .Footer {

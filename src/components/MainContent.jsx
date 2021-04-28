@@ -1,9 +1,8 @@
 import { useState, useEffect } from 'react';
+import Box from '@material-ui/core/Box';
 import Flippy from './Flippy.jsx';
 import PronounImage from './PronounImage.jsx';
 import verbs from '../data/verbs';
-
-import './MainContent.scss';
 
 function importAll(r) {
   console.log({ rKeys: r.keys() })
@@ -27,8 +26,8 @@ function getRandomArrayItem(givenArray) {
   return givenArray[Math.floor(Math.random() * givenArray.length)];
 }
 
-function getRandomPronounImage() {
-  return (<PronounImage src={getRandomArrayItem(pronounImages)} />);
+function getRandomPronoun() {
+  return { src: getRandomArrayItem(pronounImages) };
 }
 
 function getRandomVerb() {
@@ -38,11 +37,11 @@ function getRandomVerb() {
 
 const MainContent = () => {
   const [currVerb, updateVerb] = useState(getRandomVerb());
-  const [currPronounImage, updatePronounImage] = useState(getRandomPronounImage());
+  const [currPronoun, updatePronoun] = useState(getRandomPronoun());
 
   const nextTestItem = () => {
     updateVerb(getRandomVerb());
-    updatePronounImage(getRandomPronounImage());
+    updatePronoun(getRandomPronoun());
   };
 
   useEffect(() => {
@@ -115,17 +114,27 @@ const MainContent = () => {
   }, []);
 
   return (
-    <div className="MainContent">
-      <div style={{margin: '50px'}}>
-        <Flippy
-          frontContent={currVerb.spanish}
-          backContent={`to ${currVerb.english}`}
+    <>
+      <Box
+        className="MainContent"
+        display="flex"
+        flexDirection="column"
+        justifyContent="flex-start"
+        alignItems="center"
+      >
+        <Box
+          my={{ xs: 2, md: 3, lg: 4 }}
         >
-        </Flippy>
-      </div>
+          <Flippy
+            frontContent={currVerb.spanish}
+            backContent={`to ${currVerb.english}`}
+          >
+          </Flippy>
+        </Box>
       
-      {currPronounImage}
-    </div>
+        <PronounImage pronoun={currPronoun} />
+      </Box>
+    </>
   );
 };
 
