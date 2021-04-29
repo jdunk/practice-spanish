@@ -3,6 +3,7 @@ import Box from '@material-ui/core/Box';
 import Flippy from './Flippy.jsx';
 import PronounImage from './PronounImage.jsx';
 import verbs from '../data/verbs';
+import getShuffledArrayIndices from '../util/shuffle';
 
 function importAll(r) {
   console.log({ rKeys: r.keys() })
@@ -16,6 +17,8 @@ function importAll(r) {
 
 const images = importAll(require.context('../assets/img/pronouns', false, /\.(png|jpe?g|svg|jfif)$/));
 const pronounImages = images.map(([filename, module]) => module.default);
+const getShuffledPronounIndices = () => getShuffledArrayIndices(pronounImages.length);
+let shuffledPronounIndices = getShuffledPronounIndices();
 
 console.log({
   entries: Object.entries(images),
@@ -26,8 +29,22 @@ function getRandomArrayItem(givenArray) {
   return givenArray[Math.floor(Math.random() * givenArray.length)];
 }
 
-function getRandomPronoun() {
-  return { src: getRandomArrayItem(pronounImages) };
+function getInitialPronounIndices() {
+  // TODO: if shuffle mode
+  return shuffledPronounIndices;
+}
+
+function getNextPronounIndices() {
+  // TODO: if shuffle mode
+  shuffledPronounIndices.shift();
+
+  if (!shuffledPronounIndices.length)
+    shuffledPronounIndices = getShuffledPronounIndices();
+
+  return shuffledPronounIndices;
+}
+function getPronounObj(src) {
+  return { src };
 }
 
 function getRandomVerb() {
@@ -36,13 +53,22 @@ function getRandomVerb() {
 }
 
 const MainContent = () => {
+  const [nextPronounIndices, updateNextPronounIndices] = useState(getInitialPronounIndices());
+  const currPronounIndex = nextPronounIndices[0];
   const [currVerb, updateVerb] = useState(getRandomVerb());
-  const [currPronoun, updatePronoun] = useState(getRandomPronoun());
+  const currPronoun = pronounImages[currPronounIndex];
 
   const nextTestItem = () => {
     updateVerb(getRandomVerb());
-    updatePronoun(getRandomPronoun());
+    updateNextPronounIndices([...getNextPronounIndices()]);
   };
+
+  useEffect(() => {
+    nextPronounIndices.forEach(i => {
+      const img = new Image();
+      img.src = pronounImages[i];
+    });
+  }, []);
 
   useEffect(() => {
     const handleKeyDown = (event) => {
@@ -123,7 +149,7 @@ const MainContent = () => {
         alignItems="center"
       >
         <Box
-          my={{ xs: 2, md: 3, lg: 4 }}
+          my={3}
         >
           <Flippy
             frontContent={currVerb.spanish}
@@ -132,7 +158,7 @@ const MainContent = () => {
           </Flippy>
         </Box>
       
-        <PronounImage pronoun={currPronoun} />
+        <PronounImage pronoun={getPronounObj(currPronoun)} />
       </Box>
     </>
   );
