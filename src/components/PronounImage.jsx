@@ -4,21 +4,36 @@ import Skeleton from '@material-ui/lab/Skeleton';
 import './PronounImage.scss';
 
 const PronounImage = (props) => {
-  const [isFirstRender, setIsFirstRender] = useState(true);
+  const [imgLoaded, setImgLoaded] = useState(false);
 
   useEffect(() => {
-    if (isFirstRender)
-      setIsFirstRender(false);
-
-    return () => {
-      setIsFirstRender(true);
-    }
+    setImgLoaded(false);
   }, [props.pronoun]);
 
   return (
     <Box className="PronounImage" position="relative">
-      <Skeleton variant="rect" animation="pulse" width={'100%'} height={'100%'} style={{ position: 'absolute', top: 0, left: 0 }} />
-      {!isFirstRender && <img src={props.pronoun.src} alt="" style={{ display: 'block', boxShadow: '0 4px 6px 0 rgba(0, 0, 0, 0.2)' }} />}
+      <Skeleton
+        variant="rect"
+        animation="pulse"
+        width={'100%'}
+        height={'100%'}
+        style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          boxShadow: '0 4px 6px 0 rgba(0, 0, 0, 0.2)',
+          ...(imgLoaded && {visibility: 'hidden'})
+        }}
+      />
+      <img
+        src={props.pronoun.src} alt="pronoun"
+        style={{
+          display: 'block',
+          boxShadow: '0 4px 6px 0 rgba(0, 0, 0, 0.2)',
+          ...(!imgLoaded && {visibility: 'hidden'})
+        }}
+        onLoad={()=> setImgLoaded(true)}
+      />
     </Box>
   );
 };
