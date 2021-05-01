@@ -49,6 +49,19 @@ const formalityIndicators = [
   'mam',
 ];
 
+const pronounNameDefinitions = {
+  'yo': pronoun => pronoun.conjugationGroup === '1ps',
+  'tú': pronoun => pronoun.conjugationGroup === '2ps',
+  'usted': pronoun => pronoun.conjugationGroup === '3ps' && pronoun.formal,
+  'él': pronoun => pronoun.nthPerson === 3 && !pronoun.plural && !pronoun.allFemale,
+  'ella': pronoun => pronoun.nthPerson === 3 && !pronoun.plural && pronoun.allFemale,
+  'nosotros': pronoun => pronoun.conjugationGroup === '1pp' && !pronoun.allFemale,
+  'nosotras': pronoun => pronoun.conjugationGroup === '1pp' && pronoun.allFemale,
+  'ustedes': pronoun => pronoun.conjugationGroup === '3pp' && pronoun.nthPerson === 2,
+  'ellos': pronoun => pronoun.nthPerson === 3 && pronoun.plural && !pronoun.allFemale,
+  'ellas': pronoun => pronoun.nthPerson === 3 && pronoun.plural && pronoun.allFemale,
+};
+
 function importPronounImages() {
   const r = require.context('../assets/img/pronouns', false, /\.(png|jpe?g|svg|jfif)$/);
 
@@ -79,7 +92,6 @@ function getPronounsFromFilenames(objsWithFilenames) {
     };
   })
   .map(pronounObj => {
-    // verbConjugationGroupDefinitions
     let conjugationGroup;
 
     for (const [group, matchFn] of Object.entries(verbConjugationGroupDefinitions)) {
@@ -92,6 +104,21 @@ function getPronounsFromFilenames(objsWithFilenames) {
     return {
       ...pronounObj,
       conjugationGroup,
+    };
+  })
+  .map(pronounObj => {
+    let pronounName;
+
+    for (const [name, matchFn] of Object.entries(pronounNameDefinitions)) {
+      if (matchFn(pronounObj)) {
+        pronounName = name;
+        break;
+      }
+    }
+
+    return {
+      ...pronounObj,
+      pronounName,
     };
   });
 }
