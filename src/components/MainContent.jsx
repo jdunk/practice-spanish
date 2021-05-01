@@ -2,28 +2,15 @@ import { useState, useEffect } from 'react';
 import Box from '@material-ui/core/Box';
 import Flippy from './Flippy.jsx';
 import PronounImage from './PronounImage.jsx';
-import verbs from '../data/verbs';
+import getVerbs from '../core/verbs';
+import getPronouns from '../core/pronouns';
+import { conjugate } from '../core/grammar';
 import getShuffledArrayIndices from '../util/shuffle';
 
-function importAll(r) {
-  console.log({ rKeys: r.keys() })
-  return r.keys().map((item) => (
-    [
-      item.replace('./', ''),
-      r(item)
-    ]
-  ));
-}
+const pronouns = getPronouns();
 
-const images = importAll(require.context('../assets/img/pronouns', false, /\.(png|jpe?g|svg|jfif)$/));
-const pronounImages = images.map(([filename, module]) => module.default);
-const getShuffledPronounIndices = () => getShuffledArrayIndices(pronounImages.length);
+const getShuffledPronounIndices = () => getShuffledArrayIndices(pronouns.length);
 let shuffledPronounIndices = getShuffledPronounIndices();
-
-console.log({
-  entries: Object.entries(images),
-  mapped: images.map(foo => ({ foo })),
-});
 
 function getRandomArrayItem(givenArray) {
   return givenArray[Math.floor(Math.random() * givenArray.length)];
@@ -43,30 +30,31 @@ function getNextPronounIndices() {
 
   return shuffledPronounIndices;
 }
-function getPronounObj(src) {
-  return { src };
-}
+
+let verbs = getVerbs();
 
 function getRandomVerb() {
-  const spanishVerb = getRandomArrayItem(Object.keys(verbs));
-  return { spanish: spanishVerb, english: verbs[spanishVerb] };
+  return getRandomArrayItem(verbs);
 }
 
 const MainContent = () => {
-  const [nextPronounIndices, updateNextPronounIndices] = useState(getInitialPronounIndices());
+  const [nextPronounIndices, setNextPronounIndices] = useState(getInitialPronounIndices());
   const currPronounIndex = nextPronounIndices[0];
-  const [currVerb, updateVerb] = useState(getRandomVerb());
-  const currPronoun = pronounImages[currPronounIndex];
+  const [currVerb, setVerb] = useState(getRandomVerb());
+  const currPronoun = pronouns[currPronounIndex];
 
   const nextTestItem = () => {
-    updateVerb(getRandomVerb());
-    updateNextPronounIndices([...getNextPronounIndices()]);
+    setVerb(getRandomVerb());
+    setNextPronounIndices([...getNextPronounIndices()]);
   };
 
   useEffect(() => {
     nextPronounIndices.forEach(i => {
       const img = new Image();
-      img.src = pronounImages[i];
+      img.src = pronouns[i];
+      img.onload = () => {
+        // console.log(`preloaded ${img.src}`);
+      };
     });
   }, []);
 
@@ -152,13 +140,13 @@ const MainContent = () => {
           my={3}
         >
           <Flippy
-            frontContent={currVerb.spanish}
+            frontContent={currVerb.infinitive}
             backContent={`to ${currVerb.english}`}
           >
           </Flippy>
         </Box>
       
-        <PronounImage pronoun={getPronounObj(currPronoun)} />
+        <PronounImage pronoun={currPronoun} />
       </Box>
     </>
   );

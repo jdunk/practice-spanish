@@ -1,4 +1,4 @@
-const verbs = {
+export const verbs = {
   vivir: 'live',
   bailar: 'dance',
   hablar: 'speak/talk',
@@ -35,5 +35,3 @@ const verbs = {
   necesitar: 'need',
   entrar: 'enter'
 };
-
-export default verbs;
