@@ -13,12 +13,32 @@ import { conjugate } from '../core/grammar';
 import getShuffledArrayIndices from '../util/shuffle';
 
 const useStyles = makeStyles(theme => ({
-  answerBoxes: {
-    '& > *': {
-      backgroundColor: answerColor['A100'],
-    }
-  }
+  answerBoxOuter: {
+    backgroundColor: answerColor['A100'],
+  },
 }));
+
+// Only works as "Box" component props
+const answerBoxInnerProps = {
+  fontSize: {
+    xs: 'h4.fontSize',
+    sm: 'h4.fontSize',
+  },
+  lineHeight: {
+    xs: '1.4',
+    sm: '1.4',
+  },
+};
+const answerContainerProps = {
+  position: {
+    xs: 'fixed',
+    md: 'inherit',
+  },
+  bottom: {
+    xs: '30px',
+    md: '',
+  },
+};
 
 const pronouns = getPronouns();
 
@@ -189,22 +209,22 @@ const MainContent = () => {
       
         <PronounImage pronoun={currPronoun} />
 
-        <Box className={classes.answerBoxes} p={2} mt={1} display="flex" alignItems="center">
-          <Box className="pronounAnswer" p={2} mr={1} border={1} clone>
+        <Box {...answerContainerProps} mt={2} display="flex" alignItems="center">
+          <Box className={classes.answerBoxOuter} p={{ xs: 1 }} mr={1} border={1} clone>
             <Fade in={pronounRevealed} timeout={300}>
               <Paper elevation={1} style={{ ...(pronounRevealed || {display: 'none'}) }}>
-                <Typography noWrap variant="h4">
+                <Box {...answerBoxInnerProps}>
                   { `${currPronoun.pronounName.charAt(0).toUpperCase()}${currPronoun.pronounName.slice(1)}` }
-                </Typography>
+                </Box>
               </Paper>
             </Fade>
           </Box>
-          <Box className="conjugationAnswer" p={2} border={1} clone>
+          <Box className={classes.answerBoxOuter} p={{ xs: 1 }} border={1} clone>
             <Fade in={conjugationRevealed} timeout={300}>
               <Paper elevation={1} style={{ ...(pronounRevealed || {display: 'none'}) }}>
-                <Typography noWrap variant="h4">
+                <Box {...answerBoxInnerProps}>
                   { conjugate(currVerb, currPronoun) }
-                </Typography>
+                </Box>
               </Paper>
             </Fade>
           </Box>
