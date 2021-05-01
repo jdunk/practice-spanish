@@ -1,11 +1,24 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useReducer } from 'react';
+import Paper from '@material-ui/core/Paper';
+import Fade from '@material-ui/core/Fade';
 import Box from '@material-ui/core/Box';
+import Typography from '@material-ui/core/Typography';
+import { makeStyles } from '@material-ui/core/styles';
+import answerColor from '@material-ui/core/colors/green';
 import Flippy from './Flippy.jsx';
 import PronounImage from './PronounImage.jsx';
 import getVerbs from '../core/verbs';
 import getPronouns from '../core/pronouns';
 import { conjugate } from '../core/grammar';
 import getShuffledArrayIndices from '../util/shuffle';
+
+const useStyles = makeStyles(theme => ({
+  answerBoxes: {
+    '& > *': {
+      backgroundColor: answerColor['A100'],
+    }
+  }
+}));
 
 const pronouns = getPronouns();
 
@@ -37,16 +50,42 @@ function getRandomVerb() {
   return getRandomArrayItem(verbs);
 }
 
-const MainContent = () => {
-  const [nextPronounIndices, setNextPronounIndices] = useState(getInitialPronounIndices());
-  const currPronounIndex = nextPronounIndices[0];
-  const [currVerb, setVerb] = useState(getRandomVerb());
-  const currPronoun = pronouns[currPronounIndex];
+const initialState = {
+  currVerb: getRandomVerb(),
+  nextPronounIndices: getInitialPronounIndices(),
+  pronounRevealed: false,
+  conjugationRevealed: false,
+};
 
-  const nextTestItem = () => {
-    setVerb(getRandomVerb());
-    setNextPronounIndices([...getNextPronounIndices()]);
-  };
+function nextAction(state) {
+  if (!state.pronounRevealed) {
+    return {
+      ...state,
+      pronounRevealed: true,
+    };
+  }
+
+  if (!state.conjugationRevealed) {
+    return {
+      ...state,
+      conjugationRevealed: true,
+    };
+  }
+
+  return {
+    ...state,
+    pronounRevealed: false,
+    conjugationRevealed: false,
+    currVerb: getRandomVerb(),
+    nextPronounIndices: [...getNextPronounIndices()],
+  }
+}
+
+const MainContent = () => {
+  const [state, dispatchNextAction] = useReducer(nextAction, initialState);
+  const {nextPronounIndices, currVerb, pronounRevealed, conjugationRevealed} = state;
+  const currPronounIndex = nextPronounIndices[0];
+  const currPronoun = pronouns[currPronounIndex];
 
   useEffect(() => {
     nextPronounIndices.forEach(i => {
@@ -61,7 +100,7 @@ const MainContent = () => {
   useEffect(() => {
     const handleKeyDown = (event) => {
       if (event.key === 'ArrowRight' || event.key === ' ') {
-        nextTestItem();
+        dispatchNextAction();
       }
     };
 
@@ -98,7 +137,7 @@ const MainContent = () => {
       if (touchendX + 10 < touchstartX) {
         // console.log('Swiped left');
         // console.log(touchendX - touchstartX)
-        nextTestItem();
+        dispatchNextAction();
       }
 
       if (touchendX > touchstartX + 10) {
@@ -127,6 +166,8 @@ const MainContent = () => {
     };
   }, []);
 
+  const classes = useStyles();
+
   return (
     <>
       <Box
@@ -147,6 +188,27 @@ const MainContent = () => {
         </Box>
       
         <PronounImage pronoun={currPronoun} />
+
+        <Box className={classes.answerBoxes} p={2} mt={1} display="flex" alignItems="center">
+          <Box className="pronounAnswer" p={2} mr={1} border={1} clone>
+            <Fade in={pronounRevealed} timeout={300}>
+              <Paper elevation={1} style={{ ...(pronounRevealed || {display: 'none'}) }}>
+                <Typography noWrap variant="h4">
+                  { `${currPronoun.pronounName.charAt(0).toUpperCase()}${currPronoun.pronounName.slice(1)}` }
+                </Typography>
+              </Paper>
+            </Fade>
+          </Box>
+          <Box className="conjugationAnswer" p={2} border={1} clone>
+            <Fade in={conjugationRevealed} timeout={300}>
+              <Paper elevation={1} style={{ ...(pronounRevealed || {display: 'none'}) }}>
+                <Typography noWrap variant="h4">
+                  { conjugate(currVerb, currPronoun) }
+                </Typography>
+              </Paper>
+            </Fade>
+          </Box>
+        </Box>
       </Box>
     </>
   );
