@@ -21,6 +21,7 @@ export const verbConjugationGroupDefinitions = {
 };
 
 export function conjugate(verb, pronoun, tense = 'present simple') {
+  /* eslint-disable default-case */
   switch (pronoun.conjugationGroup) {
     case '1ps':
       return `${verb.stem}o`;
@@ -63,4 +64,5 @@ export function conjugate(verb, pronoun, tense = 'present simple') {
   }
 
   return '?';
+  /* eslint-enable default-case */
 }
