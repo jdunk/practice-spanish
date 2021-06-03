@@ -14,7 +14,7 @@ function Layout() {
       <AppBar>
         <Toolbar variant="dense">
           <Box display="block" mr={2} clone>
-            <img src={logo} width={35} height={35} />
+            <img src={logo} width={35} height={35} alt="logo" />
           </Box>
           <Typography noWrap variant="h6" component="h1" style={{ fontFamily: 'cursive' }}>Practice Spanish!</Typography>
         </Toolbar>

@@ -2,7 +2,6 @@ import { useEffect, useReducer } from 'react';
 import Paper from '@material-ui/core/Paper';
 import Fade from '@material-ui/core/Fade';
 import Box from '@material-ui/core/Box';
-import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import answerColor from '@material-ui/core/colors/green';
 import Flippy from './Flippy.jsx';
@@ -110,12 +109,12 @@ const MainContent = () => {
   useEffect(() => {
     nextPronounIndices.forEach(i => {
       const img = new Image();
-      img.src = pronouns[i];
+      img.src = pronouns[i].src;
       img.onload = () => {
         // console.log(`preloaded ${img.src}`);
       };
     });
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     const handleKeyDown = (event) => {
