@@ -1,4 +1,4 @@
-export const verbs = {
+export const regularVerbs = {
   vivir: 'live',
   bailar: 'dance',
   hablar: 'speak/talk',
@@ -8,8 +8,6 @@ export const verbs = {
   comer: 'eat',
   escuchar: 'listen',
   llamar: 'call',
-  ser: 'be (more permanent)',
-  estar: 'be (more temporary)',
   visitar: 'visit',
   asistir: 'attend',
   recibir: 'receive',

@@ -1,4 +1,4 @@
-import { verbs } from '../data/verbs';
+import { regularVerbs } from '../data/verbs';
 
 let verbObjs;
 
@@ -7,7 +7,7 @@ export default function getVerbs() {
     return verbObjs;
 
   return verbObjs =
-    Object.entries(verbs).map(([k, v]) => ({
+    Object.entries(regularVerbs).map(([k, v]) => ({
       infinitive: k,
       english: v,
       suffix: k.substr(-2),
