@@ -1,4 +1,5 @@
 import { useEffect, useReducer } from 'react';
+import { usePreloadImgsStatic } from '../hooks/imgPreloader';
 import Paper from '@material-ui/core/Paper';
 import Fade from '@material-ui/core/Fade';
 import Box from '@material-ui/core/Box';
@@ -106,16 +107,8 @@ const MainContent = () => {
   const currPronounIndex = nextPronounIndices[0];
   const currPronoun = pronouns[currPronounIndex];
 
-  useEffect(() => {
-    nextPronounIndices.forEach(i => {
-      const img = new Image();
-      img.src = pronouns[i].src;
-      img.onload = () => {
-        // console.log(`preloaded ${img.src}`);
-      };
-    });
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
-
+  usePreloadImgsStatic(nextPronounIndices.map(i => pronouns[i].src));
+  
   useEffect(() => {
     const handleKeyDown = (event) => {
       if (event.key === 'ArrowRight' || event.key === ' ') {
