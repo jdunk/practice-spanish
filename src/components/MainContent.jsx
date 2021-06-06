@@ -1,5 +1,6 @@
-import { useEffect, useReducer } from 'react';
+import { useEffect, useReducer, useCallback } from 'react';
 import { usePreloadImgsStatic } from '../hooks/imgPreloader';
+import { useEventListener } from '../hooks/eventListener';
 import Paper from '@material-ui/core/Paper';
 import Fade from '@material-ui/core/Fade';
 import Box from '@material-ui/core/Box';
@@ -109,20 +110,12 @@ const MainContent = () => {
 
   usePreloadImgsStatic(nextPronounIndices.map(i => pronouns[i].src));
   
-  useEffect(() => {
-    const handleKeyDown = (event) => {
-      if (event.key === 'ArrowRight' || event.key === ' ') {
-        dispatchNextAction();
-      }
-    };
-
-    window.addEventListener('keydown', handleKeyDown);
-
-    // cleanup this component
-    return () => {
-      window.removeEventListener('keydown', handleKeyDown);
-    };
-  }, []);
+  useEventListener('keydown', useCallback((event) => {
+    if (event.key === 'ArrowRight' || event.key === ' ') {
+      event.preventDefault();
+      dispatchNextAction();
+    }
+  }, []));
 
   useEffect(() => {
     let touchstartX = 0;
