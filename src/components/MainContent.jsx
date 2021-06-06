@@ -1,6 +1,6 @@
-import { useEffect, useReducer, useCallback } from 'react';
+import { useReducer, useCallback } from 'react';
 import { usePreloadImgsStatic } from '../hooks/imgPreloader';
-import { useEventListener } from '../hooks/eventListener';
+import { useEventListener, useSwipeListener } from '../hooks/eventListener';
 import Paper from '@material-ui/core/Paper';
 import Fade from '@material-ui/core/Fade';
 import Box from '@material-ui/core/Box';
@@ -117,59 +117,11 @@ const MainContent = () => {
     }
   }, []));
 
-  useEffect(() => {
-    let touchstartX = 0;
-    let touchstartY = 0;
-    let touchendX = 0;
-    let touchendY = 0;
-
-    const handleTouchStart = (event) => {
-      touchstartX = event.changedTouches[0].screenX;
-      touchstartY = event.changedTouches[0].screenY;
-    };
-
-    const handleTouchEnd = (event) => {
-      touchendX = event.changedTouches[0].screenX;
-      touchendY = event.changedTouches[0].screenY;
-      handleGesture();
-    };
-
-    window.addEventListener('touchstart', handleTouchStart, false);
-
-    window.addEventListener('touchend', handleTouchEnd, false);
-
-    function handleGesture() {
-      if (touchendX + 10 < touchstartX) {
-        // console.log('Swiped left');
-        // console.log(touchendX - touchstartX)
-        dispatchNextAction();
-      }
-
-      if (touchendX > touchstartX + 10) {
-        // console.log('Swiped right');
-        // console.log(touchendX - touchstartX)
-      }
-
-      if (touchendY + 10 < touchstartY) {
-        // console.log('Swiped up');
-        // console.log(touchendY - touchstartY)
-      }
-
-      if (touchendY > touchstartY + 10) {
-        // console.log('Swiped down');
-        // console.log(touchendY - touchstartY)
-      }
-
-      if (touchendY === touchstartY) {
-        // console.log('Tap');
-      }
-    }
-
-    return () => {
-      window.removeEventListener('touchstart', handleTouchStart);
-      window.removeEventListener('touchend', handleTouchEnd);
-    };
-  }, []);
+  useSwipeListener({
+    left: useCallback(() => {
+      dispatchNextAction();
+    }, [])
+  });
 
   const classes = useStyles();
 
