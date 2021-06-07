@@ -1,4 +1,5 @@
 import { verbConjugationGroupDefinitions } from './grammar';
+import pronounImgData from '../data/pronoun-images';
 
 const defaultPronounProperties = {
   nthPerson: null,
@@ -62,19 +63,6 @@ const pronounNameDefinitions = {
   'ellas': pronoun => pronoun.nthPerson === 3 && pronoun.plural && pronoun.allFemale,
 };
 
-function importPronounImages() {
-  const r = require.context('../assets/img/pronouns', false, /\.(png|jpe?g|svg|jfif)$/);
-
-  return r.keys().map(
-    filename => ({
-      // Orig filename only:
-      filename: filename.split('/').slice(-1)[0], // 'some/path/file-name.jpg' -> 'file-name.jpg'
-      // Compiled public src filename:
-      src: r(filename).default,
-    })
-  );
-}
-
 function getPronounsFromFilenames(objsWithFilenames) {
   return objsWithFilenames.map(obj => {
     // Parse filename, e.g. 'you-female-formal.jpg' -> ['you', 'female', 'formal']
@@ -129,5 +117,5 @@ export default function getPronouns() {
   if (pronouns)
     return pronouns;
 
-  return pronouns = getPronounsFromFilenames(importPronounImages());
+  return pronouns = getPronounsFromFilenames(pronounImgData);
 }

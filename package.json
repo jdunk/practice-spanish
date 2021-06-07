@@ -21,6 +21,7 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
+    "generate-data-pronoun-images": "node src/core/generate-data-pronoun-images.js > src/data/pronoun-images.js",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
