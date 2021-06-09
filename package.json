@@ -8,7 +8,6 @@
     "@material-ui/icons": "^4.11.2",
     "@material-ui/lab": "^4.0.0-alpha.58",
     "@testing-library/jest-dom": "^5.11.10",
-    "@testing-library/react": "^11.2.6",
     "@testing-library/user-event": "^12.8.3",
     "clsx": "^1.1.1",
     "react": "^17.0.2",
@@ -41,5 +40,9 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@testing-library/react": "^11.2.7",
+    "@testing-library/react-hooks": "^7.0.0"
   }
 }
